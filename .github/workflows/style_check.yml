@@ -1,0 +1,47 @@
+name: Clang Format Check
+
+on:
+  push:
+    branches-ignore:
+      - "hotfix/**"
+      - "feature/**"
+      - "feat/**"
+      - "support/**"
+      - "fix/**"
+  pull_request:
+
+jobs:
+  clang-format-check:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - name: Install clang-format
+      run: sudo apt-get install -y clang-format-18
+
+    - name: Check Style
+      id: clang-format
+      run: |
+        RED='\033[0;31m'
+        BLUE='\033[0;34m'
+        ORANGE='\033[0;33m'
+        NC='\033[0m' # No Color
+
+        clang-format-18 --dry-run --Werror -style='{BasedOnStyle: WebKit, SortIncludes: false}' $(find ./ -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.cc" -o -name "*.hpp" \) -not -path "*/build/*")
+        result=$?
+
+        # Check if there are any formatting issues
+        if [[ $result == 1 ]]; then
+          echo -e "[${RED}ERROR${NC}] ${RED}Current code does not match clang format${NC}"
+          echo -e "[${BLUE}INFO${NC}] ${ORANGE}Running auto formatting${NC}"
+          exit 1
+        else
+          echo -e "[${BLUE}INFO${NC}] ------------------------------------------------${NC}"
+          echo -e "[${BLUE}INFO${NC}]${BLUE} Auto-formatting check finished, no issues ${NC}"
+          echo -e "[${BLUE}INFO${NC}] ------------------------------------------------${NC}"
+        fi

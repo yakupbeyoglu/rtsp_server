@@ -1,0 +1,79 @@
+name: RTSP Server Unit Tests
+
+on:
+  push:
+    branches-ignore:
+      - "fix/**"
+      - "hotfix/**"
+      - "feature/**"
+      - "feat/**"
+      - "support/**"
+  pull_request:
+
+jobs:
+  unit_tests:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libavformat-dev \
+            libavcodec-dev \
+            libavutil-dev \
+            libswscale-dev \
+            libswresample-dev \
+            lcov \
+            python3
+
+      # Ubuntu 24.04 ships with ASLR entropy that trips ASan's internal
+      # allocator.  Lowering mmap_rnd_bits to 28 restores compatibility.
+      - name: Fix ASan mmap_rnd_bits
+        run: sudo sysctl -w vm.mmap_rnd_bits=28
+
+      - name: Configure (ASan + coverage)
+        run: |
+          cmake -B build_asan \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DUSE_ASAN=ON
+
+      - name: Build (ASan + coverage)
+        run: make -j$(nproc) -C build_asan
+
+      - name: Run unit tests (ASan)
+        working-directory: build_asan
+        run: ctest --output-on-failure --timeout 120
+
+      - name: Configure (TSan)
+        run: |
+          cmake -B build_tsan \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DUSE_TSAN=ON
+
+      - name: Build (TSan)
+        run: make -j$(nproc) -C build_tsan
+
+      - name: Run unit tests (TSan)
+        working-directory: build_tsan
+        run: ctest --output-on-failure --timeout 120
+
+      - name: Configure (Release)
+        run: |
+          cmake -B build_release \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build (Release)
+        run: make -j$(nproc) -C build_release
+
+      - name: Run functional tests
+        run: python3 test/functional/test_rtsp_server.py
