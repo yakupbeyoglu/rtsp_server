@@ -1,0 +1,94 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "x64-debug",
+      "displayName": "x64 Debug (ASan)",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RTSP_USE_SPDLOG": "ON",
+        "USE_ASAN": "OFF",
+        "USE_TSAN": "OFF"
+      }
+    },
+    {
+      "name": "x64-debug-asan",
+      "displayName": "x64 Debug (ASan)",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RTSP_USE_SPDLOG": "ON",
+        "USE_ASAN": "OFF",
+        "USE_TSAN": "OFF"
+      }
+    },
+    {
+      "name": "x64-debug-tsan",
+      "displayName": "x64 Debug (TSan)",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RTSP_USE_SPDLOG": "ON",
+        "USE_ASAN": "OFF",
+        "USE_TSAN": "ON"
+      }
+    },
+    {
+      "name": "x64-release",
+      "displayName": "x64 Release",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "RTSP_USE_SPDLOG": "ON",
+        "USE_ASAN": "OFF",
+        "USE_TSAN": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "x64-debug",
+      "configurePreset": "x64-debug"
+    },
+    {
+      "name": "x64-debug-asan",
+      "configurePreset": "x64-debug-asan"
+    },
+    {
+      "name": "x64-debug-tsan",
+      "configurePreset": "x64-debug-tsan"
+    },
+    {
+      "name": "x64-release",
+      "configurePreset": "x64-release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "x64-debug-tests",
+      "configurePreset": "x64-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    }
+  ]
+}

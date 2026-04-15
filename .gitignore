@@ -1,0 +1,93 @@
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
+
+*.autosave
+*.a
+*.core
+*.moc
+*.o
+*.obj
+*.orig
+*.rej
+*.so
+*.so.*
+*_pch.h.cpp
+*_resource.rc
+.#*
+*.*#
+core
+!core/
+tags
+.DS_Store
+.directory
+*.debug
+*.prl
+*.app
+moc_*.cpp
+# ui_*.h
+qrc_*.cpp
+Thumbs.db
+*.res
+*.rc
+/.qmake.cache
+*/.qmake.cache
+/.qmake.stash
+*/.qmake.stash
+
+# qtcreator generated files
+*.pro.user*
+
+# xemacs temporary files
+*.flc
+
+# Vim temporary files
+.*.swp
+
+# Visual Studio generated files
+*.ib_pdb_index
+*.idb
+*.ilk
+*.pdb
+*.sln
+*.suo
+*.vcproj
+*vcproj.*.*.user
+*.ncb
+*.sdf
+*.opensdf
+*.vcxproj
+*vcxproj.*
+.vscode*
+# MinGW generated files
+*.Debug
+*.Release
+
+# Python byte code
+*.pyc
+
+Back/build/*
+# !Back/build/MainProcess/MainProcess
+
+AESlib/build/*
+Front/build/*
+# !Front/build/chargingDemo
+Test_Dir/log/*
+moc*
+node_modules/
+*.user*
+*.user
+*.pro.user
+
+# Binaries
+# --------
+*.dll
+*.exe
+Test_Dir/log/*
+
+# Ignore build directories
+build*
+build-*
+.vscode
+*.pb.h
+*.pb.cc

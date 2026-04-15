@@ -1,0 +1,14 @@
+services:
+  rtsp-server:
+    build:
+      context: .
+      target: runtime
+    image: rtsp-server:latest
+    container_name: rtsp-server
+    ports:
+      - "554:554/tcp"
+    volumes:
+      - ./media:/media:ro   # mount a local ./media folder as the video library
+    restart: unless-stopped
+    environment:
+      - RTSP_LOGLEVEL=INFO
